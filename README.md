@@ -13,4 +13,4 @@ To use these Cloud Function scripts to integrate GCP Budget Alerts, a user must 
 
 Each function has a "<insert webhook url>" indicator in the code. Be sure to update this part of the code with the url of your target webhook before deploying.
 
-For step-by-step guidance on setting up and using these functions, see my article here: 
+For step-by-step guidance on setting up and using these functions, see my article here: https://medium.com/@wapfel20/kill-unexpected-cloud-costs-integrate-gcp-budget-alerts-with-slack-microsoft-teams-hangouts-b1db306db080
