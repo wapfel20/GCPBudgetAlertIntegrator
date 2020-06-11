@@ -1,7 +1,7 @@
 const request = require(`request`);
 
 // Translate JSON message into Text
-exports.notifyTeams = async (pubsubEvent, context) => {
+exports.notifyMicrosoftTeams = async (pubsubEvent, context) => {
     const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
     const alert = JSON.parse(pubsubData);
    
