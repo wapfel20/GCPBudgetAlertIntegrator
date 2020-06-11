@@ -8,7 +8,7 @@ webexTeams_index.js - Cloud Function for pushing GCP Budget Alerts to Webex Team
 
 The same package.json file can be used with all scripts - it simply provides the Javascript "Request" library that is uses to make CURL commands in Node.js.
 
-#Using the Functions
+# Using the Functions
 To use these Cloud Function scripts to integrate GCP Budget Alerts, a user must first have created a GCP Budget in the billing console, configured it to post to a pub/sub topic, and created a webhook in the target collaboration evironment. They would then need to configure the cloud function to trigger on the pub/sub topic and push to the webhook.
 
 Each function has a "<insert webhook url>" indicator in the code. Be sure to update this part of the code with the url of your target webhook before deploying.
