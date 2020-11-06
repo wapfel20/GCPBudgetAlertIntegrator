@@ -5,7 +5,9 @@ exports.notifyWebexTeams = async (pubsubEvent, context) => {
     const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
     const alert = JSON.parse(pubsubData);
 
-
+    // Check to see if the budget has been exceeded. (without this, budget updates will be sent every 30 minutes)
+    if (alert.costAmount >= alert.budgetAmount) {
+        
     // Post message to the room
     request({
       uri: "<insert webhook ulr>",
@@ -21,4 +23,5 @@ exports.notifyWebexTeams = async (pubsubEvent, context) => {
     }
 });
 
+}
 };
