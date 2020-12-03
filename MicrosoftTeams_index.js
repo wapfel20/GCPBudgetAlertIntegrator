@@ -5,43 +5,50 @@ exports.notifyMicrosoftTeams = async (pubsubEvent, context) => {
     const pubsubData = Buffer.from(pubsubEvent.data, 'base64').toString();
     const alert = JSON.parse(pubsubData);
    
-    // Check to see if the budget has been exceeded. (without this, budget updates will be sent every 30 minutes)
-    if (alert.costAmount >= alert.budgetAmount) {
-
+    // Format of message can be found here: https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification_format
+    let title = "", message = ""
+    // If there was an alert threshold breached
+    if ("alertThresholdExceeded" in alert) {
+        title = "GCP Budget Alert Threshold Exceeded"
+        message = `*Budget Name:* ${alert.budgetDisplayName}` +
+            `\n*Current Spend:* ${alert.costAmount}` +
+            `\n*Budget Amount Exceeded:* ${alert.budgetAmount}` +
+            `\n*Alert Threshold:* ${alert.alertThresholdExceeded * 100}%` +
+            `\n*Currency Type:* ${alert.currencyCode}` +
+            `\n*Budget Start Date:* ${alert.costIntervalStart}`
+    } else if ("forecastThresholdExceeded" in alert) {
+        title = "GCP Budget Forecast Threshold Exceeded"
+        message = `*Budget Name:* ${alert.budgetDisplayName}` +
+            `\n*Current Spend:* ${alert.costAmount}` +
+            `\n*Forecast Amount Exceeded:* ${alert.budgetAmount}` +
+            `\n*Forecast Threshold:* ${alert.forecastThresholdExceeded * 100}%` +
+            `\n*Currency Type:* ${alert.currencyCode}` +
+            `\n*Budget Start Date:* ${alert.costIntervalStart}`
+    } else {
+        // Uncomment the section below if you wish to get general updates about a budget. This will be noisy! Updates are sent every 20 to 30 minutes per budget.
+        /*
+        title = "Budget Update"
+        message = `*Budget Name:* ${alert.budgetDisplayName}` +
+            `\n*Current Spend:* ${alert.costAmount}` +
+            `\n*Budget Amount:* ${alert.budgetAmount}` +
+            `\n*Currency Type:* ${alert.currencyCode}` +
+            `\n*Budget Start Date:* ${alert.costIntervalStart}`
+        */
+    }
+    
+    if (title != "" && message != "") {
     // Post message to the room
     request({
-      uri: "<insert webhook ulr>",
+      uri: process.env.TEAMS_WEBHOOK,
       method: "POST",
       json: {
           "@type": "MessageCard",
           "themeColor": "FF0000",
-          "title": "GCP Billing Alert",
+          "title": title,
           "summary": "A GCP project or group of projects that you have cost alerting enabled on has exceeded its monthly budget.", 
           "sections": [
             {
-              "facts": [
-                {
-                  "name": "Budget Name:",
-                  "value": alert.budgetDisplayName
-                },
-                {
-                  "name": "Budget Start Date:",
-                  "value": alert.costIntervalStart
-                },
-                {
-                  "name": "Budget Amount:",
-                  "value": alert.budgetAmount
-                },
-                {
-                  "name": "Current Spend:",
-                  "value": alert.costAmount
-                },
-                {
-                    "name": "Currency Type:",
-                    "value": alert.currencyCode
-                },
-              ],
-              "text": "A GCP project that you are monitoring for cost increases has exceeded its monthly budget."
+              "text": message
             }
           ],
           "potentialAction": [
@@ -67,3 +74,5 @@ exports.notifyMicrosoftTeams = async (pubsubEvent, context) => {
 
 }
 };
+
+
