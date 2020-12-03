@@ -11,6 +11,6 @@ The same package.json file can be used with all scripts - it simply provides the
 # Using the Functions
 To use these Cloud Function scripts to integrate GCP Budget Alerts, a user must first have created a GCP Budget in the billing console, configured it to post to a pub/sub topic, and created a webhook in the target collaboration evironment. They would then need to configure the cloud function to trigger on the pub/sub topic and push to the webhook.
 
-Each function has a "<insert webhook url>" indicator in the code. Be sure to update this part of the code with the url of your target webhook before deploying.
+Each function leverages a Cloud Functions Environment Variable to store the web hook to the team channel (Slack, MS Teams, Hangouts Chat, etc). Be sure to update this part of the function with the url of your target webhook before deploying.
 
 For step-by-step guidance on setting up and using these functions, see my article here: https://medium.com/@wapfel20/kill-unexpected-cloud-costs-integrate-gcp-budget-alerts-with-slack-microsoft-teams-hangouts-b1db306db080
